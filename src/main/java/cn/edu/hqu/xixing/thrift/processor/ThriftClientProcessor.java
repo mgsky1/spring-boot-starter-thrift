@@ -26,7 +26,6 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,10 +100,8 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
     private TServiceClient createClient(Class clazz, ThriftClient anno) throws Exception{
         TTransport transport = new TSocket(anno.host(), anno.port(), anno.timeout());
         TProtocol protocol = new TBinaryProtocol(transport);
-        Constructor<TServiceClient> constructor = clazz.getDeclaredConstructor(TProtocol.class);
-        TServiceClient realClient =  constructor.newInstance(protocol);
         ThriftClientProxy clientProxy = new ThriftClientProxy();
-        return (TServiceClient) clientProxy.bind(realClient, transport, protocol);
+        return (TServiceClient) clientProxy.bind(clazz, transport, protocol);
     }
 
 }

@@ -58,15 +58,18 @@ $ mvn clean install
 
 - 在客户端上使用注解`@ThriftClient`来注册一个Thrift客户端，starter会自动注入客户端实例
 
+现在，你可以像以前一样直接调用接口中的方法了！
+
 ```java
 @Service
 public class PersonServiceImpl {
 
-    @ThriftClient(host = "127.0.0.1", port = 8989, timeout = 300, protocol = "TBinaryProtocol", transport = "TSocket")
+    @ThriftClient(host = "127.0.0.1", port = 8989, timeout = 300, serviceName="personService")
     private PersonService.Client client;
 
 
     public String getPerson() throws Exception{
+        client.getPersonByName("lucy");
        // do something
     }
 

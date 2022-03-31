@@ -21,6 +21,7 @@ import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransport;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.slf4j.Logger;
@@ -45,8 +46,9 @@ public class ThriftClientProxy implements MethodInterceptor {
 
     private TProtocol protocol;
 
-    public Object bind(TServiceClient client, TTransport transport, TProtocol protocol) {
-        this.realClient = client;
+    public Object bind(Class clazz, TTransport transport, TProtocol protocol) throws Exception{
+        Constructor<TServiceClient> constructor = clazz.getDeclaredConstructor(TProtocol.class);
+        this.realClient =  constructor.newInstance(protocol);
         this.transport = transport;
         this.protocol = protocol;
         Enhancer enhancer = new Enhancer();
