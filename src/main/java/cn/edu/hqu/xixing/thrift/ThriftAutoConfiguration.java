@@ -16,8 +16,12 @@
  */
 package cn.edu.hqu.xixing.thrift;
 
-import cn.edu.hqu.xixing.thrift.common.ThriftClientComponentFactory;
 import cn.edu.hqu.xixing.thrift.processor.ThriftClientProcessor;
+import cn.edu.hqu.xixing.thrift.processor.ThriftServerProcessor;
+import cn.edu.hqu.xixing.thrift.runner.ThriftServerRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,13 +35,23 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ThriftAutoConfiguration {
 
-    @Bean(name = "thriftClientComponentFactory")
-    public ThriftClientComponentFactory createClientFactory() {
-        return new ThriftClientComponentFactory();
+    @Bean
+    public ThriftClientProcessor createClientProcessor() {
+        return new ThriftClientProcessor();
     }
 
     @Bean
-    public ThriftClientProcessor createProcessor() {
-        return new ThriftClientProcessor();
+    public ThriftServerProcessor createServerProcessor() {
+        return new ThriftServerProcessor();
+    }
+
+    @Bean(name = "serviceMap")
+    public Map<Integer, Map<String, Object>> creatServiceMap() {
+        return new HashMap<>();
+    }
+
+    @Bean
+    public ThriftServerRunner createRunner() {
+        return new ThriftServerRunner();
     }
 }

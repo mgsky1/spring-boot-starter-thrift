@@ -36,6 +36,6 @@ public @interface ThriftClient {
     int port();
     // 超时时间
     int timeout() default 300;
-    // 要调用的Thrift服务名，多服务情况下生效
+    // 要调用的Thrift服务名
     String serviceName() default "";
 }

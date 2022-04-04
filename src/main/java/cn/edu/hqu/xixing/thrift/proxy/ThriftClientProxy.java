@@ -18,6 +18,7 @@ package cn.edu.hqu.xixing.thrift.proxy;
 
 
 import org.apache.thrift.TServiceClient;
+import org.apache.thrift.protocol.TMultiplexedProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TTransport;
 
@@ -46,9 +47,10 @@ public class ThriftClientProxy implements MethodInterceptor {
 
     private TProtocol protocol;
 
-    public Object bind(Class clazz, TTransport transport, TProtocol protocol) throws Exception{
+    public Object bind(Class clazz, TTransport transport, TProtocol protocol, String serviceName) throws Exception{
+        TMultiplexedProtocol multiplexedProtocol = new TMultiplexedProtocol(protocol, serviceName);
         Constructor<TServiceClient> constructor = clazz.getDeclaredConstructor(TProtocol.class);
-        this.realClient =  constructor.newInstance(protocol);
+        this.realClient =  constructor.newInstance(multiplexedProtocol);
         this.transport = transport;
         this.protocol = protocol;
         Enhancer enhancer = new Enhancer();

@@ -17,7 +17,6 @@
 package cn.edu.hqu.xixing.thrift.processor;
 
 import cn.edu.hqu.xixing.thrift.annotation.ThriftClient;
-import cn.edu.hqu.xixing.thrift.common.ThriftClientComponentFactory;
 import cn.edu.hqu.xixing.thrift.proxy.ThriftClientProxy;
 
 import org.apache.thrift.TServiceClient;
@@ -47,9 +46,6 @@ import org.springframework.util.ReflectionUtils;
 public class ThriftClientProcessor implements BeanPostProcessor, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-
-
-    private ThriftClientComponentFactory clientComponentFactory;
 
     private static final Logger logger = LoggerFactory.getLogger(ThriftClientProcessor.class);
 
@@ -101,7 +97,7 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
         TTransport transport = new TSocket(anno.host(), anno.port(), anno.timeout());
         TProtocol protocol = new TBinaryProtocol(transport);
         ThriftClientProxy clientProxy = new ThriftClientProxy();
-        return (TServiceClient) clientProxy.bind(clazz, transport, protocol);
+        return (TServiceClient) clientProxy.bind(clazz, transport, protocol, anno.serviceName());
     }
 
 }
