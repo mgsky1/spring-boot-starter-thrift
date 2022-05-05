@@ -20,7 +20,6 @@ package cn.edu.hqu.xixing.thrift.proxy;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TMultiplexedProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TTransport;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -43,15 +42,12 @@ public class ThriftClientProxy implements MethodInterceptor {
 
     private TServiceClient realClient;
 
-    private TTransport transport;
-
     private TProtocol protocol;
 
-    public Object bind(Class clazz, TTransport transport, TProtocol protocol, String serviceName) throws Exception{
+    public Object bind(Class clazz, TProtocol protocol, String serviceName) throws Exception{
         TMultiplexedProtocol multiplexedProtocol = new TMultiplexedProtocol(protocol, serviceName);
         Constructor<TServiceClient> constructor = clazz.getDeclaredConstructor(TProtocol.class);
         this.realClient =  constructor.newInstance(multiplexedProtocol);
-        this.transport = transport;
         this.protocol = protocol;
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(this.realClient.getClass());
@@ -61,17 +57,14 @@ public class ThriftClientProxy implements MethodInterceptor {
 
     @Override
     public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-        if (!this.transport.isOpen()) {
-            // 打开Socket
-            transport.open();
-        }
-        // 调用方法
         Object res = null;
-        res = methodProxy.invoke(this.realClient, objects);
-        if (this.transport.isOpen()) {
-            // 关闭Socket
-            transport.close();
+        try {
+            // 调用方法
+            res = methodProxy.invoke(this.realClient, objects);
+            return res;
+        } catch (Exception e) {
+            logger.error("Thrift RPC调用发生异常:{}", e);
+            return null;
         }
-        return res;
     }
 }

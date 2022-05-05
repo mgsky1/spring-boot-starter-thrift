@@ -18,7 +18,9 @@ package cn.edu.hqu.xixing.thrift;
 
 import cn.edu.hqu.xixing.thrift.processor.ThriftClientProcessor;
 import cn.edu.hqu.xixing.thrift.processor.ThriftServerProcessor;
-import cn.edu.hqu.xixing.thrift.runner.ThriftServerRunner;
+import cn.edu.hqu.xixing.thrift.runner.ThriftRunner;
+
+import org.apache.thrift.transport.TTransport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +53,12 @@ public class ThriftAutoConfiguration {
     }
 
     @Bean
-    public ThriftServerRunner createRunner() {
-        return new ThriftServerRunner();
+    public ThriftRunner createRunner() {
+        return new ThriftRunner();
+    }
+
+    @Bean(name = "transportMap")
+    public Map<String, TTransport> createTransportMap() {
+        return new HashMap<>();
     }
 }

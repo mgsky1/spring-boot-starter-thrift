@@ -21,14 +21,16 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
+import org.apache.thrift.transport.TTransport;
 
 import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
@@ -38,12 +40,15 @@ import org.springframework.boot.ApplicationRunner;
  * @CreateDate: 2022/4/4 10:18 上午
  * @Modify:
  */
-public class ThriftServerRunner implements ApplicationRunner {
+public class ThriftRunner implements ApplicationRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ThriftServerRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(ThriftRunner.class);
 
-    @Autowired
+    @Resource(name = "serviceMap")
     private Map<Integer, Map<String, Object>> serviceMap;
+
+    @Resource(name = "transportMap")
+    private Map<String, TTransport> transportMap;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -52,6 +57,22 @@ public class ThriftServerRunner implements ApplicationRunner {
             ServeThread thread = new ServeThread(key, serviceMap.get(key));
             thread.setName("thrift-server-" + key);
             thread.start();
+        }
+        // 多线程连接监控
+        for (String key : transportMap.keySet()) {
+            ClientThread thread = new ClientThread(key, transportMap.get(key));
+            thread.setName("thrift-client-" + key);
+            thread.start();
+        }
+    }
+
+    public void destroy() {
+        for (String key : transportMap.keySet()) {
+            TTransport transport = transportMap.get(key);
+            if (transport.isOpen()) {
+                transport.close();
+            }
+            logger.info("Thrift客户端连接{}已关闭", key);
         }
     }
 }
@@ -102,5 +123,46 @@ class ServeThread extends Thread {
             logger.error("Thrift服务端启动失败，端口{}：{},", port, e);
         }
 
+    }
+}
+
+class ClientThread extends Thread {
+
+    private TTransport transport;
+
+    private String transportName;
+
+    private static final Logger logger = LoggerFactory.getLogger(ClientThread.class);
+
+    public ClientThread(String transportName, TTransport transport) {
+        this.transport = transport;
+        this.transportName = transportName;
+    }
+
+    @Override
+    public void run() {
+        try {
+            process();
+        } catch (Exception e) {
+            logger.error("Thrift客户端监听发生异常{}", e);
+        }
+    }
+
+    public void process() throws InterruptedException {
+        // 每隔1s监控Thrift连接
+        while (true) {
+            if (!transport.isOpen()) {
+                while (true) {
+                    try {
+                        transport.open();
+                        break;
+                    } catch (Exception e) {
+                        logger.error("Thrift连接{}发生异常{}，尝试重新连接...", transportName, e);
+                        Thread.sleep(1000);
+                    }
+                }
+            }
+            Thread.sleep(1000);
+        }
     }
 }

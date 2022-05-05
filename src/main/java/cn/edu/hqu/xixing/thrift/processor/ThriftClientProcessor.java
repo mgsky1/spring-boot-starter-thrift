@@ -28,6 +28,9 @@ import org.apache.thrift.transport.TTransport;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +51,9 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
     private ApplicationContext applicationContext;
 
     private static final Logger logger = LoggerFactory.getLogger(ThriftClientProcessor.class);
+
+    @Resource(name = "transportMap")
+    private Map<String, TTransport> transportMap;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -94,10 +100,15 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
 
     // 根据注解生成ThriftClient对象
     private TServiceClient createClient(Class clazz, ThriftClient anno) throws Exception{
-        TTransport transport = new TSocket(anno.host(), anno.port(), anno.timeout());
+        String key = anno.host() + "-" + anno.port() + "-" + anno.timeout();
+        TTransport transport = transportMap.get(key);
+        if (transport == null) {
+            transport = new TSocket(anno.host(), anno.port(), anno.timeout());
+            transportMap.put(key, transport);
+        }
         TProtocol protocol = new TBinaryProtocol(transport);
         ThriftClientProxy clientProxy = new ThriftClientProxy();
-        return (TServiceClient) clientProxy.bind(clazz, transport, protocol, anno.serviceName());
+        return (TServiceClient) clientProxy.bind(clazz, protocol, anno.serviceName());
     }
 
 }
