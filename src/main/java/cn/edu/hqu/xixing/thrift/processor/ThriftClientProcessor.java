@@ -16,9 +16,6 @@
  */
 package cn.edu.hqu.xixing.thrift.processor;
 
-import cn.edu.hqu.xixing.thrift.annotation.ThriftClient;
-import cn.edu.hqu.xixing.thrift.proxy.ThriftClientProxy;
-
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -40,6 +37,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
 
+import cn.edu.hqu.xixing.thrift.annotation.ThriftClient;
+import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
+import cn.edu.hqu.xixing.thrift.proxy.ThriftClientProxy;
+
 /**
  * @Desc: Thrift客户端注解处理器
  * @Author: huangzhiyuan
@@ -52,8 +53,8 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
 
     private static final Logger logger = LoggerFactory.getLogger(ThriftClientProcessor.class);
 
-    @Resource(name = "transportMap")
-    private Map<String, TTransport> transportMap;
+    @Resource(name = "connPoolMap")
+    private Map<String, TSocketPool> connPoolMap;
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -100,15 +101,20 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
 
     // 根据注解生成ThriftClient对象
     private TServiceClient createClient(Class clazz, ThriftClient anno) throws Exception{
-        String key = anno.host() + "-" + anno.port() + "-" + anno.timeout();
-        TTransport transport = transportMap.get(key);
-        if (transport == null) {
-            transport = new TSocket(anno.host(), anno.port(), anno.timeout());
-            transportMap.put(key, transport);
+        String host = anno.host();
+        int port = anno.port();
+        int timeout = anno.timeout();
+        String key = host + "-" + port + "-" + timeout;
+        TSocketPool pool = connPoolMap.get(key);
+        if (pool == null) {
+            pool = new TSocketPool(host, port, timeout);
+            logger.info("关于{}的连接池已创建", key);
+            connPoolMap.put(key, pool);
         }
-        TProtocol protocol = new TBinaryProtocol(transport);
         ThriftClientProxy clientProxy = new ThriftClientProxy();
-        return (TServiceClient) clientProxy.bind(clazz, protocol, anno.serviceName());
+        TTransport fakeSocket = new TSocket("127.0.0.1", 0 , 0);
+        TProtocol protocol = new TBinaryProtocol(fakeSocket);
+        return (TServiceClient) clientProxy.bind(clazz, protocol, anno.serviceName(), pool);
     }
 
 }

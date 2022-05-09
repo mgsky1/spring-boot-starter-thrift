@@ -16,8 +16,6 @@
  */
 package cn.edu.hqu.xixing.thrift.processor;
 
-import cn.edu.hqu.xixing.thrift.annotation.ThriftServer;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +25,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+
+import cn.edu.hqu.xixing.thrift.annotation.ThriftServer;
 
 /**
  * @Desc: Apache Thrift服务端注解处理类

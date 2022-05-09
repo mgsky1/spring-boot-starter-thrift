@@ -16,17 +16,16 @@
  */
 package cn.edu.hqu.xixing.thrift;
 
-import cn.edu.hqu.xixing.thrift.processor.ThriftClientProcessor;
-import cn.edu.hqu.xixing.thrift.processor.ThriftServerProcessor;
-import cn.edu.hqu.xixing.thrift.runner.ThriftRunner;
-
-import org.apache.thrift.transport.TTransport;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
+import cn.edu.hqu.xixing.thrift.processor.ThriftClientProcessor;
+import cn.edu.hqu.xixing.thrift.processor.ThriftServerProcessor;
+import cn.edu.hqu.xixing.thrift.runner.ThriftRunner;
 
 /**
  * @Desc: Apache Thrift自动配置类
@@ -52,13 +51,13 @@ public class ThriftAutoConfiguration {
         return new HashMap<>();
     }
 
-    @Bean
+    @Bean(destroyMethod = "destroy")
     public ThriftRunner createRunner() {
         return new ThriftRunner();
     }
 
-    @Bean(name = "transportMap")
-    public Map<String, TTransport> createTransportMap() {
+    @Bean(name = "connPoolMap")
+    public Map<String, TSocketPool> createTransportMap() {
         return new HashMap<>();
     }
 }

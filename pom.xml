@@ -18,6 +18,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <thrift.version>0.16.0</thrift.version>
+        <commons.pool2.version>2.11.1</commons.pool2.version>
     </properties>
 
     <dependencies>
@@ -33,6 +34,11 @@
             <groupId>org.apache.thrift</groupId>
             <artifactId>libthrift</artifactId>
             <version>${thrift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>${commons.pool2.version}</version>
         </dependency>
     </dependencies>
 

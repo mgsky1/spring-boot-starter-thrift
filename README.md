@@ -2,9 +2,7 @@
 
 ## Description
 
-一个SpringBoot Apache Thrift启动器，只想做一个单纯的Thrift启动器
-
-> 目前还在开发中...
+一个SpringBoot Apache Thrift启动器，主要场景在于Java与其他语言的跨语言调用上，比如java调用Python编写的AI模型
 
 
 ## Dependency

@@ -21,7 +21,6 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TTransport;
 
 import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
@@ -33,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+
+import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
 
 /**
  * @Desc: Apache Thrift服务启动器
@@ -47,8 +48,8 @@ public class ThriftRunner implements ApplicationRunner {
     @Resource(name = "serviceMap")
     private Map<Integer, Map<String, Object>> serviceMap;
 
-    @Resource(name = "transportMap")
-    private Map<String, TTransport> transportMap;
+    @Resource(name = "connPoolMap")
+    private Map<String, TSocketPool> connPoolMap;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -58,21 +59,12 @@ public class ThriftRunner implements ApplicationRunner {
             thread.setName("thrift-server-" + key);
             thread.start();
         }
-        // 多线程连接监控
-        for (String key : transportMap.keySet()) {
-            ClientThread thread = new ClientThread(key, transportMap.get(key));
-            thread.setName("thrift-client-" + key);
-            thread.start();
-        }
     }
 
     public void destroy() {
-        for (String key : transportMap.keySet()) {
-            TTransport transport = transportMap.get(key);
-            if (transport.isOpen()) {
-                transport.close();
-            }
-            logger.info("Thrift客户端连接{}已关闭", key);
+        for (String key : connPoolMap.keySet()) {
+            TSocketPool pool = connPoolMap.get(key);
+            pool.close();
         }
     }
 }
@@ -123,46 +115,5 @@ class ServeThread extends Thread {
             logger.error("Thrift服务端启动失败，端口{}：{},", port, e);
         }
 
-    }
-}
-
-class ClientThread extends Thread {
-
-    private TTransport transport;
-
-    private String transportName;
-
-    private static final Logger logger = LoggerFactory.getLogger(ClientThread.class);
-
-    public ClientThread(String transportName, TTransport transport) {
-        this.transport = transport;
-        this.transportName = transportName;
-    }
-
-    @Override
-    public void run() {
-        try {
-            process();
-        } catch (Exception e) {
-            logger.error("Thrift客户端监听发生异常{}", e);
-        }
-    }
-
-    public void process() throws InterruptedException {
-        // 每隔1s监控Thrift连接
-        while (true) {
-            if (!transport.isOpen()) {
-                while (true) {
-                    try {
-                        transport.open();
-                        break;
-                    } catch (Exception e) {
-                        logger.error("Thrift连接{}发生异常{}，尝试重新连接...", transportName, e);
-                        Thread.sleep(1000);
-                    }
-                }
-            }
-            Thread.sleep(1000);
-        }
     }
 }
