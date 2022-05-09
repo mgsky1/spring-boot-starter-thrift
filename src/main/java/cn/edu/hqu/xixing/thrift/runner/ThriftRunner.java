@@ -65,6 +65,7 @@ public class ThriftRunner implements ApplicationRunner {
         for (String key : connPoolMap.keySet()) {
             TSocketPool pool = connPoolMap.get(key);
             pool.close();
+            logger.info("连接池{}已关闭", key);
         }
     }
 }
