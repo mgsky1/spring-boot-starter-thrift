@@ -66,7 +66,7 @@ $ mvn clean install
 
 ```xml
  <dependency>
-   <groupId>cn.edu.hqu.xixing</groupId>
+   <groupId>cn.acmsmu.xixing</groupId>
    <artifactId>spring-boot-starter-thrift</artifactId>
    <version>0.1-SNAPSHOT</version>
 </dependency>
