@@ -9,6 +9,7 @@
 
 - SpringBoot 2.5
 - Apache Thrift 0.16.0
+- commons pool 2.11.1
 
 ## Features
 
