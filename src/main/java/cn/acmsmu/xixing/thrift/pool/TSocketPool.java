@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.pool;
+package cn.acmsmu.xixing.thrift.pool;
 
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPool;
@@ -22,8 +22,8 @@ import org.apache.thrift.transport.TSocket;
 
 import java.util.NoSuchElementException;
 
-import cn.edu.hqu.xixing.thrift.config.TSocketPoolConfig;
-import cn.edu.hqu.xixing.thrift.factory.TSocketPoolFactory;
+import cn.acmsmu.xixing.thrift.config.TSocketPoolConfig;
+import cn.acmsmu.xixing.thrift.factory.TSocketPoolFactory;
 
 /**
  * @Desc: TSocket连接池

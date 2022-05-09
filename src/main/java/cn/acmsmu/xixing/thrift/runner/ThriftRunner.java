@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.runner;
+package cn.acmsmu.xixing.thrift.runner;
 
 import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessor;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 
-import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
+import cn.acmsmu.xixing.thrift.pool.TSocketPool;
 
 /**
  * @Desc: Apache Thrift服务启动器

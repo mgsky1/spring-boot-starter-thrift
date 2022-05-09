@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.edu.hqu.xixing.thrift.ThriftAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.acmsmu.xixing.thrift.ThriftAutoConfiguration

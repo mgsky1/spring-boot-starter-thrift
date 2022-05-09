@@ -14,24 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.config;
+package cn.acmsmu.xixing.thrift.annotation;
 
-
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.thrift.transport.TSocket;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * @Desc: TSocket连接池配置
+ * @Desc: Thrift服务端注解
  * @Author: huangzhiyuan
- * @CreateDate: 2022/5/8 19:26
+ * @CreateDate: 2022/3/21 8:15 下午
  * @Modify:
  */
-public class TSocketPoolConfig extends GenericObjectPoolConfig<TSocket> {
-    public TSocketPoolConfig(int timeout) {
-        setMaxTotal(20);
-        setTestOnCreate(true);
-        setTestOnBorrow(true);
-        setMinEvictableIdleTimeMillis(timeout);
-        setTimeBetweenEvictionRunsMillis(1000L);
-    }
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ThriftServer {
+    // Thrift服务端口号
+    int port();
+    // 服务名称
+    String serviceName();
 }

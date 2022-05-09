@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.processor;
+package cn.acmsmu.xixing.thrift.processor;
 
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.protocol.TBinaryProtocol;
@@ -37,9 +37,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
 
-import cn.edu.hqu.xixing.thrift.annotation.ThriftClient;
-import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
-import cn.edu.hqu.xixing.thrift.proxy.ThriftClientProxy;
+import cn.acmsmu.xixing.thrift.annotation.ThriftClient;
+import cn.acmsmu.xixing.thrift.pool.TSocketPool;
+import cn.acmsmu.xixing.thrift.proxy.ThriftClientProxy;
 
 /**
  * @Desc: Thrift客户端注解处理器

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift;
+package cn.acmsmu.xixing.thrift;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +22,10 @@ import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
-import cn.edu.hqu.xixing.thrift.processor.ThriftClientProcessor;
-import cn.edu.hqu.xixing.thrift.processor.ThriftServerProcessor;
-import cn.edu.hqu.xixing.thrift.runner.ThriftRunner;
+import cn.acmsmu.xixing.thrift.processor.ThriftClientProcessor;
+import cn.acmsmu.xixing.thrift.pool.TSocketPool;
+import cn.acmsmu.xixing.thrift.processor.ThriftServerProcessor;
+import cn.acmsmu.xixing.thrift.runner.ThriftRunner;
 
 /**
  * @Desc: Apache Thrift自动配置类

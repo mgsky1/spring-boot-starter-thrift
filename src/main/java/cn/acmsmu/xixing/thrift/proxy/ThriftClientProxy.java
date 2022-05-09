@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.proxy;
+package cn.acmsmu.xixing.thrift.proxy;
 
 
 import org.apache.thrift.TServiceClient;
@@ -32,7 +32,7 @@ import org.springframework.cglib.proxy.Enhancer;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
-import cn.edu.hqu.xixing.thrift.pool.TSocketPool;
+import cn.acmsmu.xixing.thrift.pool.TSocketPool;
 
 /**
  * @Desc: Thrift客户端动态代理

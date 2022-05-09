@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.edu.hqu.xixing.thrift.factory;
+package cn.acmsmu.xixing.thrift.factory;
 
 
 import org.apache.commons.pool2.BasePooledObjectFactory;
@@ -53,7 +53,7 @@ public class TSocketPoolFactory extends BasePooledObjectFactory<TSocket> {
     public TSocket create() throws Exception {
         TSocket socket = new TSocket(host, port, timeout);
         socket.open();
-        logger.info("TSocket对象{}已创建", socket);
+        logger.debug("TSocket对象{}已创建", socket);
         return socket;
     }
 
@@ -64,7 +64,7 @@ public class TSocketPoolFactory extends BasePooledObjectFactory<TSocket> {
             socket.close();
         }
         p.markAbandoned();
-        logger.info("TSocket对象{}已销毁", socket);
+        logger.debug("TSocket对象{}已销毁", socket);
     }
 
     @Override
