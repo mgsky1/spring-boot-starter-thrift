@@ -47,7 +47,7 @@ public class ThriftServerProcessor implements BeanPostProcessor, ApplicationCont
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         ThriftServer anno = bean.getClass().getAnnotation(ThriftServer.class);
         if (anno != null) {
             int port = anno.port();

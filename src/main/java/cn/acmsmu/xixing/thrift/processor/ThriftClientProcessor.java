@@ -57,7 +57,7 @@ public class ThriftClientProcessor implements BeanPostProcessor, ApplicationCont
     private Map<String, TSocketPool> connPoolMap;
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         List<Field> fieldList = scanTargetClass(bean.getClass());
         for (Field field : fieldList) {
             Object target = applicationContext.getBean(beanName);
