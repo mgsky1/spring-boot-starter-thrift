@@ -56,12 +56,6 @@ public @interface ThriftServer {
 
 ## Usage
 
-- 安装
-
-```shell
-$ mvn clean install
-```
-
 - 导入依赖
 
 ```xml
@@ -70,6 +64,23 @@ $ mvn clean install
    <artifactId>spring-boot-starter-thrift</artifactId>
    <version>0.1-SNAPSHOT</version>
 </dependency>
+```
+
+- 由于是SNAPSHOT，因此需要在项目pom中添加SNAPSHOT仓库
+
+```xml
+ <repositories>
+    <repository>
+        <id>ossrh.snapshots</id>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
 ```
 
 - 服务端使用
